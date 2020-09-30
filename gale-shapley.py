@@ -19,37 +19,33 @@ women = {
 
 
 class Person(object):
-    index = 0
+    index: int = 0
     engaged_with = None
-    preferences: list = []
-    proposed_to: list = []
+    preferences: List[int] = []
+    to_propose: List[int] = []
 
-    def __init__(self, preferences, index):
+    def __init__(self, preferences: List[int], index: int):
         self.preferences = preferences
+        self.to_propose = preferences
         self.index = index
 
     def __repr__(self):
         return f"{self.index} engaged with {self.engaged_with.index if self.engaged_with else None}"
 
-    def get_woman_not_proposed(self):
-        for woman in self.preferences:
-            if woman not in self.proposed_to:
-                return woman
+    def get_woman_index_not_proposed(self) -> int:
+        return self.to_propose.pop(0)
 
-    def engage(self, person):
+    def engage(self, person) -> None:
         self.engaged_with = person
-        self.proposed_to.append(person)
         person.engaged_with = self
-        person.proposed_to.append(self)
 
-    def disengage(self):
-        self.preferences.remove(self.engaged_with.index)
+    def disengage(self) -> None:
         self.engaged_with = None
 
 
 def get_not_engaged(men: List[Person]) -> Person:
     for man in men:
-        if man.engaged_with is None and len(man.proposed_to) != len(man.preferences):
+        if man.engaged_with is None and man.proposed_to:
             return man
 
     return None
@@ -63,7 +59,7 @@ def get_person_by_index(index: int, persons: List[Person]) -> Person:
     return None
 
 
-def gale_shapley(menPreferences: dict, womenPreferences: dict):
+def gale_shapley(menPreferences: dict, womenPreferences: dict) -> None:
     men = []
     for man, preferences in menPreferences.items():
         men.append(Person(preferences, man))
@@ -72,9 +68,9 @@ def gale_shapley(menPreferences: dict, womenPreferences: dict):
     for woman, preferences in womenPreferences.items():
         women.append(Person(preferences, woman))
 
-    # (man = get_not_engaged...) -> while man:
+    # (man = get_not_engaged...) -> while man is not None:
     while (man := get_not_engaged(men)) is not None:
-        woman_index = man.get_woman_not_proposed()
+        woman_index = man.get_woman_index_not_proposed()
         woman = get_person_by_index(woman_index, women)
 
         if woman.engaged_with is None:
