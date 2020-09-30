@@ -24,12 +24,21 @@ class Person(object):
     preferences: List[int] = []
     to_propose: List[int] = []
 
-    def __init__(self, preferences: List[int], index: int):
+    def __init__(self, preferences: List[int], index: int): # 
+        """
+        Les fonctions avec 2 underscores avant et après ont des fonctionnement défini par le langage
+        En l'occurence, cette fonction permet de passer des paramètres à la création d'un objet : `person = Person(preferences, index)`
+
+        https://docs.python.org/3/reference/datamodel.html#object.__init__
+        """
         self.preferences = preferences
         self.to_propose = preferences
         self.index = index
 
     def __repr__(self):
+        """
+        Cette fonction permet d'afficher proprement un objet de cette classe
+        """
         return f"{self.index} engaged with {self.engaged_with.index if self.engaged_with else None}"
 
     def get_woman_index_not_proposed(self) -> int:
